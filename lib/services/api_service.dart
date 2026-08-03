@@ -1,0 +1,28 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import '../models/stock.dart';
+
+class ApiService {
+  final Dio dio = Dio();
+
+  Future<List<Stock>> fetchStocks() async {
+    try {
+      final response = await dio.get(
+        'https://gist.githubusercontent.com/juni12891226/937ac4583eb7407416830652df1c9fbc/raw/c7e96c1691ed15dd9ded27018cd8742ba5d1a0f6/gistfile1.txt',
+      );
+
+      //print(response.data.runtimeType);
+
+      final data = response.data is String
+          ? jsonDecode(response.data)
+          : response.data;
+
+      final List stocks = data['stocks'];
+
+      return stocks.map((stock) => Stock.fromJson(stock)).toList();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+}
