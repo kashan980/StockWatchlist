@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/stock.dart';
 import '../services/api_service.dart';
 import '../services/mock_stock_service.dart';
