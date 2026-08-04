@@ -29,17 +29,27 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
   }
 
   Future<void> loadStocks() async {
-    final result = await apiService.fetchStocks();
+    try {
 
-    service = MockStockService(result);
+      final result = await apiService.fetchStocks();
 
-    service!.start();
+      service = MockStockService(result);
 
-    setState(() {
-      stocks = result;
+      service!.start();
 
-      isLoading = false;
-    });
+      setState(() {
+        stocks = result;
+        isLoading = false;
+      });
+
+    } catch (e) {
+      debugPrint("Error loading stocks: $e");
+
+      setState(() {
+        isLoading = false;
+      });
+
+    }
   }
 
   @override
