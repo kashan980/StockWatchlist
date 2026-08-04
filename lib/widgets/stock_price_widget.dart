@@ -83,7 +83,7 @@ class _StockPriceWidgetState extends State<StockPriceWidget> {
       },
 
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 500),
 
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
 
