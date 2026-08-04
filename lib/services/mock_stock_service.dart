@@ -51,7 +51,7 @@ class MockStockService {
 
       final updatedStock =
       oldStock.copyWith(
-        currentPrice: newPrice,
+        current_price: newPrice,
         change: newChange,
         change_percentage:
         newChangePercentage,

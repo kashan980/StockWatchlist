@@ -36,7 +36,7 @@ class Stock {
   }
 
   Stock copyWith({
-    double? currentPrice,
+    double? current_price,
     double? change,
     double? change_percentage,
   }) {
