@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import '../models/stock.dart';
+import 'package:flutter/material.dart';
 class MockStockService {
   final Random random = Random();
   // Stores current stock values
@@ -65,8 +66,8 @@ class MockStockService {
           .add(updatedStock);
       // Debug checking
 
-      print(
-        "$symbol updated: ${updatedStock.current_price}",
+      debugPrint(
+        '$symbol updated: ${updatedStock.current_price}',
       );
 
     }
