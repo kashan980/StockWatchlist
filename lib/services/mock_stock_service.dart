@@ -40,8 +40,10 @@ class MockStockService {
       final oldStock =
       stocks[symbol]!;
       // Random movement between -2 and +2
+      const double limit = 2;
+
       final movement =
-          (random.nextDouble() * 4) - 2;
+          (random.nextDouble() * (limit * 2)) - limit;
       final newPrice =
           oldStock.currentPrice + movement;
       final newChange =
