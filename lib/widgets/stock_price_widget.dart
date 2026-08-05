@@ -37,7 +37,7 @@ class _StockPriceWidgetState extends State<StockPriceWidget> {
       updatedStock,
     ) {
       final bool priceIncreased =
-          updatedStock.current_price > currentStock.current_price;
+          updatedStock.currentPrice > currentStock.currentPrice;
 
       setState(() {
         currentStock = updatedStock;
@@ -110,7 +110,7 @@ class _StockPriceWidgetState extends State<StockPriceWidget> {
 
               children: [
                 Text(
-                  currentStock.current_price.toStringAsFixed(2),
+                  currentStock.currentPrice.toStringAsFixed(2),
 
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),

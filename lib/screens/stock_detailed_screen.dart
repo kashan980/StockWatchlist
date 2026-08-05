@@ -90,7 +90,7 @@ class _StockDetailScreenState
 
             ),
             Text(
-              currentStock.current_price
+              currentStock.currentPrice
                   .toStringAsFixed(2),
               style:
               const TextStyle(

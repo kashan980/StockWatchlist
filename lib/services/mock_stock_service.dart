@@ -43,18 +43,20 @@ class MockStockService {
       final movement =
           (random.nextDouble() * 4) - 2;
       final newPrice =
-          oldStock.current_price + movement;
+          oldStock.currentPrice + movement;
       final newChange =
-          newPrice - oldStock.previous_close;
+          newPrice - oldStock.previousClose;
+
+
 
       final newChangePercentage =
-          (newChange / oldStock.previous_close) * 100;
+          (newChange / oldStock.previousClose) * 100;
 
       final updatedStock =
       oldStock.copyWith(
-        current_price: newPrice,
+        currentPrice: newPrice,
         change: newChange,
-        change_percentage:
+        changePercentage:
         newChangePercentage,
 
       );
@@ -67,7 +69,7 @@ class MockStockService {
       // Debug checking
 
       debugPrint(
-        '$symbol updated: ${updatedStock.current_price}',
+        '$symbol updated: ${updatedStock.currentPrice}',
       );
 
     }
