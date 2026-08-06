@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/stock.dart';
-import '../services/mock_stock_service.dart';
+import '../services/stock_data_source.dart';
 import '../screens/stock_detailed_screen.dart';
 
 class StockPriceWidget extends StatefulWidget {
   final Stock stock;
-  final MockStockService service;
+  final StockDataSource service;
 
   const StockPriceWidget({
     super.key,

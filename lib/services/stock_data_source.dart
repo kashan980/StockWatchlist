@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:math';
 import '../models/stock.dart';
 import 'package:flutter/material.dart';
-class MockStockService {
+class StockDataSource {
   final Random random = Random();
   // Stores current stock values
   final Map<String, Stock> stocks = {};
   // Separate stream for every stock
   final Map<String, StreamController<Stock>> controllers = {};
   Timer? timer;
-  MockStockService(List<Stock> initialStocks) {
+  StockDataSource(List<Stock> initialStocks) {
     for (var stock in initialStocks) {
       // Store stock
       stocks[stock.symbol] = stock;
