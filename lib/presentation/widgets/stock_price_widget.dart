@@ -133,105 +133,67 @@
 // }
 
 import 'package:flutter/material.dart';
-
 import '../../data/models/stock.dart';
 import '../screens/stock_detailed_screen.dart';
-
 
 class StockPriceWidget extends StatelessWidget {
 
   final Stock stock;
-
-
   const StockPriceWidget({
     super.key,
     required this.stock,
   });
 
-
   @override
   Widget build(BuildContext context) {
 
     final bool isUp = stock.change >= 0;
-
-
     return InkWell(
 
       borderRadius: BorderRadius.circular(12),
-
-
       onTap: () {
 
         Navigator.push(
-
           context,
-
           MaterialPageRoute(
-
             builder: (_) => StockDetailScreen(
               stock: stock,
             ),
-
           ),
-
         );
-
       },
-
-
       child: AnimatedContainer(
-
         duration: const Duration(milliseconds: 500),
-
-
+        //color: highlightColor,
         margin: const EdgeInsets.symmetric(
           horizontal: 8,
           vertical: 4,
         ),
-
-
         child: Card(
-
           child: ListTile(
-
-
             title: Text(
-
               stock.symbol,
-
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
 
             ),
-
-
             subtitle: Text(
               stock.name,
             ),
-
-
             trailing: Column(
 
               mainAxisAlignment:
               MainAxisAlignment.center,
-
-
               crossAxisAlignment:
               CrossAxisAlignment.end,
-
-
               children: [
-
-
                 Text(
 
                   stock.currentPrice.toStringAsFixed(2),
-
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
-
                 ),
 
 
@@ -239,36 +201,20 @@ class StockPriceWidget extends StatelessWidget {
 
                   "${isUp ? '+' : ''}"
                       "${stock.change.toStringAsFixed(2)}",
-
-
                   style: TextStyle(
 
                     color: isUp
                         ? Colors.green
                         : Colors.red,
-
-
                     fontWeight:
                     FontWeight.bold,
-
                   ),
-
                 ),
-
-
               ],
-
             ),
-
-
           ),
-
         ),
-
       ),
-
     );
-
   }
-
 }
