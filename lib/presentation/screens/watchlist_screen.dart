@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/stock.dart';
-import '../services/api_service.dart';
-import '../services/mock_stock_service.dart';
+import '../../data/models/stock.dart';
+import '../../data/services/api_service.dart';
+import '../../data/services/stock_data_source.dart';
 import '../widgets/stock_price_widget.dart';
 
 class WatchlistScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
 
   List<Stock> stocks = [];
 
-  MockStockService? service;
+  StockDataSource? service;
 
   bool isLoading = true;
 
@@ -32,7 +32,7 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
 
       final result = await apiService.fetchStocks();
 
-      service = MockStockService(result);
+      service = StockDataSource(result);
 
       service!.start();
 

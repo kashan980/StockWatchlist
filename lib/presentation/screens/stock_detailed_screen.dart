@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../models/stock.dart';
-import '../services/mock_stock_service.dart';
+import '../../data/models/stock.dart';
+import '../../data/services/stock_data_source.dart';
 
 class StockDetailScreen extends StatefulWidget {
   final Stock stock;
-  final MockStockService service;
+  final StockDataSource service;
 
   const StockDetailScreen({
     super.key,
