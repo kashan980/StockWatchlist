@@ -21,7 +21,6 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
 
   @override
   void dispose() {
-    // CRITICAL: Shut down the service and all its timers when the app closes
     _stockService.dispose();
     super.dispose();
   }
@@ -37,7 +36,6 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // The ListView is built ONCE. The individual rows handle their own live rebuilds.
           return ListView.separated(
             itemCount: _stockService.stockNotifiers.length,
             separatorBuilder: (_, __) => const Divider(height: 1),

@@ -32,9 +32,9 @@ class _StockRowState extends State<StockRow> {
 
     final newPrice = widget.stockNotifier.value.price;
     if (newPrice > _previousPrice) {
-      _triggerHighlight(Colors.green.withOpacity(0.3)); // Green for up
+      _triggerHighlight(Colors.green.withValues(alpha: 0.3)); // Green for up
     } else if (newPrice < _previousPrice) {
-      _triggerHighlight(Colors.red.withOpacity(0.3)); // Red for down
+      _triggerHighlight(Colors.red.withValues(alpha: 0.3)); // Red for down
     }
     _previousPrice = newPrice;
   }
@@ -82,22 +82,25 @@ class _StockRowState extends State<StockRow> {
               stock.symbol,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
+
+            // Find the trailing Column in stock_row.dart and update the percentage text display:
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '\Rs ${stock.price.toStringAsFixed(2)}',
+                  'Rs ${stock.price.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  '${isPositive ? '+' : ''}${stock.netChange.toStringAsFixed(2)}',
+                  '${isPositive ? '+' : ''}${stock.netChange.toStringAsFixed(2)} (${isPositive ? '+' : ''}${stock.percentChange.toStringAsFixed(2)}%)',
                   style: TextStyle(
                     color: isPositive ? Colors.green : Colors.red,
-                    fontSize: 14,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
