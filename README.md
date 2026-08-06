@@ -1,16 +1,12 @@
-# stockwatch
+# Real-Time Stock Watchlist - Day 2 Architecture
 
-A new Flutter project.
+## Architecture Overview
+This application utilizes a strict 3-tier architecture managed by `flutter_bloc` to ensure separation of concerns, scalability, and zero business logic within the UI.
 
-## Getting Started
+1. **Data Layer (`StockRepository`)**: Manages the Dio HTTP client. Responsible strictly for fetching and parsing the JSON payload into Dart models.
+2. **Domain/State Layer (`StockCubit` & `StockState`)**: Manages the mock WebSocket timer. Emits strongly typed, immutable states (`StockLoading`, `StockLoaded`, `StockError`). The `isPaused` and `searchQuery` parameters exist here, allowing data transformation before it ever hits the UI.
+3. **Presentation Layer**: Dumb UI components.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Performance & Optimization
+To satisfy the strict rebuild constraints, the main `ListView` relies on `BlocSelector` at the row level.
+Instead of rebuilding the entire list when a new `StockLoaded` state is emitted, `BlocSelector` filters the state down to the specific `StockModel`. When the Cubit updates the price of `PSO`, only the `PSO` widget rebuilds, leaving the rest of the list completely untouched. Memory is safely managed via Cubit's native `close()` override which aggressively cancels all active timers.

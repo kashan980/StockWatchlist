@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -16,15 +17,37 @@ class StockService {
   Future<void> initializeAndFetch() async {
     isLoading.value = true;
     try {
+      // 1. Fetch the data from the API
       final response = await _dio.get(
         'https://gist.githubusercontent.com/juni12891226/937ac4583eb7407416830652df1c9fbc/raw/c7e96c1691ed15dd9ded27018cd8742ba5d1a0f6/gistfile1.txt',
       );
 
-      _populateInitialData();
+      // 2. Convert the raw text into a JSON map
+      final Map<String, dynamic> data = response.data is String
+          ? jsonDecode(response.data)
+          : response.data;
+
+      // 3. Extract the 'stocks' list from the JSON
+      final List<dynamic> stocksList = data['stocks'];
+
+      // 4. Clear the hardcoded stuff and load ALL stocks from the API!
+      stockNotifiers.clear();
+      for (var item in stocksList) {
+        final symbol = item['symbol'];
+        final price = (item['current_price'] as num).toDouble();
+        final netChange = (item['change'] as num).toDouble();
+
+        // Create a Radio Tower for EVERY stock in the API using its real starting price
+        stockNotifiers[symbol] = ValueNotifier(
+          StockModel(symbol: symbol, price: price, netChange: netChange),
+        );
+      }
     } catch (e) {
+      // 5. If the internet is disconnected, fallback to the 5 hardcoded stocks
       _populateInitialData();
     }
 
+    // 6. Start the Timer to randomly fluctuate whichever stocks we just loaded!
     _startLiveFeed();
     isLoading.value = false;
   }

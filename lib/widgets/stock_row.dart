@@ -1,49 +1,63 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../cubit/stock_cubit.dart';
+import '../cubit/stock_state.dart';
 import '../models/stock_model.dart';
-import '../screens/stock_detail_screen.dart';
+import '../screens/stock_detail_screen.dart'; // Make sure this matches your Day 1 file name!
 
-class StockRow extends StatefulWidget {
-  final ValueNotifier<StockModel> stockNotifier;
+class StockRow extends StatelessWidget {
+  final String symbol;
 
-  const StockRow({super.key, required this.stockNotifier});
+  const StockRow({super.key, required this.symbol});
 
   @override
-  State<StockRow> createState() => _StockRowState();
+  Widget build(BuildContext context) {
+    return BlocSelector<StockCubit, StockState, StockModel?>(
+      selector: (state) {
+        if (state is StockLoaded) {
+          return state.stocks[symbol];
+        }
+        return null;
+      },
+      builder: (context, stock) {
+        if (stock == null) return const SizedBox.shrink();
+        return _StockRowDisplay(stock: stock);
+      },
+    );
+  }
 }
 
-class _StockRowState extends State<StockRow> {
-  Color _highlightColor = Colors.transparent;
-  Timer? _highlightTimer;
-  late double _previousPrice;
+class _StockRowDisplay extends StatefulWidget {
+  final StockModel stock;
+
+  const _StockRowDisplay({required this.stock});
 
   @override
-  void initState() {
-    super.initState();
-    _previousPrice = widget.stockNotifier.value.price;
-    // Listen to the notifier strictly for the color flash effect
-    widget.stockNotifier.addListener(_onPriceChanged);
-  }
+  State<_StockRowDisplay> createState() => _StockRowDisplayState();
+}
 
-  void _onPriceChanged() {
-    if (!mounted) return;
+class _StockRowDisplayState extends State<_StockRowDisplay> {
+  Color _highlightColor = Colors.transparent;
+  Timer? _highlightTimer;
 
-    final newPrice = widget.stockNotifier.value.price;
-    if (newPrice > _previousPrice) {
-      _triggerHighlight(Colors.green.withOpacity(0.3)); // Green for up
-    } else if (newPrice < _previousPrice) {
-      _triggerHighlight(Colors.red.withOpacity(0.3)); // Red for down
+  @override
+  void didUpdateWidget(covariant _StockRowDisplay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Compare new price to old price to trigger the blinking effect
+    if (widget.stock.price > oldWidget.stock.price) {
+      _triggerHighlight(Colors.green.withOpacity(0.3));
+    } else if (widget.stock.price < oldWidget.stock.price) {
+      _triggerHighlight(Colors.red.withOpacity(0.3));
     }
-    _previousPrice = newPrice;
   }
 
   void _triggerHighlight(Color color) {
     _highlightTimer?.cancel();
     setState(() => _highlightColor = color);
-
-    // Briefly highlight, then return to transparent
     _highlightTimer = Timer(const Duration(milliseconds: 500), () {
       if (mounted) setState(() => _highlightColor = Colors.transparent);
     });
@@ -51,59 +65,58 @@ class _StockRowState extends State<StockRow> {
 
   @override
   void dispose() {
-    // CRITICAL: Prevent memory leaks when widget is unmounted
-    widget.stockNotifier.removeListener(_onPriceChanged);
     _highlightTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      color: _highlightColor,
-      // ValueListenableBuilder intercepts the rebuild. Only this ListTile rebuilds!
-      child: ValueListenableBuilder<StockModel>(
-        valueListenable: widget.stockNotifier,
-        builder: (context, stock, child) {
-          final isPositive = stock.netChange >= 0;
+    final isPositive = widget.stock.netChange >= 0;
 
-          return ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      StockDetailScreen(stockNotifier: widget.stockNotifier),
-                ),
-              );
-            },
-            title: Text(
-              stock.symbol,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+    // InkWell adds the ripple effect and the onTap navigation
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                StockDetailScreen(symbol: widget.stock.symbol),
+          ),
+        );
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        color: _highlightColor,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              widget.stock.symbol,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '\Rs ${stock.price.toStringAsFixed(2)}',
+                  'Rs ${widget.stock.price.toStringAsFixed(2)}',
                   style: const TextStyle(
-                    fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    fontSize: 15,
                   ),
                 ),
                 Text(
-                  '${isPositive ? '+' : ''}${stock.netChange.toStringAsFixed(2)}',
+                  '${isPositive ? "+" : ""}${widget.stock.netChange.toStringAsFixed(2)}',
                   style: TextStyle(
                     color: isPositive ? Colors.green : Colors.red,
-                    fontSize: 14,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
