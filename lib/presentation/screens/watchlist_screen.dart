@@ -79,6 +79,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../providers/stock_provider.dart';
 import '../widgets/stock_price_widget.dart';
 import '../../domain/state/stock_state.dart';
@@ -91,23 +92,65 @@ class WatchlistScreen extends ConsumerWidget {
     final stockState = ref.watch(stockProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Stock Watchlist")),
+      appBar: AppBar(
+        title: const Text("Stock Watchlist"),
 
-      body: stockState is StockLoading
-          ? const Center(child: CircularProgressIndicator())
-          : stockState is StockError
-          ? Center(child: Text(stockState.message))
-          : stockState is StockLoaded
-          ? ListView.builder(
-              itemCount: stockState.stocks.length,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.pause),
 
-              itemBuilder: (context, index) {
-                final stock = stockState.stocks[index];
+            onPressed: () {
+              ref.read(stockProvider.notifier).pauseFeed();
+            },
+          ),
 
-                return StockPriceWidget(stock: stock);
+          IconButton(
+            icon: const Icon(Icons.play_arrow),
+
+            onPressed: () {
+              ref.read(stockProvider.notifier).resumeFeed();
+            },
+          ),
+        ],
+      ),
+
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+
+            child: TextField(
+              decoration: const InputDecoration(
+                hintText: "Search Symbol",
+
+                border: OutlineInputBorder(),
+              ),
+
+              onChanged: (value) {
+                ref.read(stockProvider.notifier).searchStocks(value);
               },
-            )
-          : const SizedBox(),
+            ),
+          ),
+
+          Expanded(
+            child: stockState is StockLoading
+                ? const Center(child: CircularProgressIndicator())
+                : stockState is StockError
+                ? Center(child: Text(stockState.message))
+                : stockState is StockLoaded
+                ? ListView.builder(
+                    itemCount: stockState.stocks.length,
+
+                    itemBuilder: (context, index) {
+                      final stock = stockState.stocks[index];
+
+                      return StockPriceWidget(stock: stock);
+                    },
+                  )
+                : const SizedBox(),
+          ),
+        ],
+      ),
     );
   }
 }
