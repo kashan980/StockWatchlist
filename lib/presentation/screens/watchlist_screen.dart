@@ -5,76 +5,76 @@
 // import '../widgets/stock_price_widget.dart';
 //
 // class WatchlistScreen extends StatefulWidget {
-//   const WatchlistScreen({super.key});
+// const WatchlistScreen({super.key});
 //
-//   @override
-//   State<WatchlistScreen> createState() => _WatchlistScreenState();
+// @override
+// State createState() => _WatchlistScreenState();
 // }
 //
-// class _WatchlistScreenState extends State<WatchlistScreen> {
-//   final ApiService apiService = ApiService();
+// class _WatchlistScreenState extends State {
+// final ApiService apiService = ApiService();
 //
-//   List<Stock> stocks = [];
+// List stocks = [];
 //
-//   StockDataSource? service;
+// StockDataSource? service;
 //
-//   bool isLoading = true;
+// bool isLoading = true;
 //
-//   @override
-//   void initState() {
-//     super.initState();
+// @override
+// void initState() {
+// super.initState();
 //
-//     loadStocks();
-//   }
+// loadStocks();
+// }
 //
-//   Future<void> loadStocks() async {
-//     try {
+// Future loadStocks() async {
+// try {
 //
-//       final result = await apiService.fetchStocks();
+// final result = await apiService.fetchStocks();
 //
-//       service = StockDataSource(result);
+// service = StockDataSource(result);
 //
-//       service!.start();
+// service!.start();
 //
-//       setState(() {
-//         stocks = result;
-//         isLoading = false;
-//       });
+// setState(() {
+// stocks = result;
+// isLoading = false;
+// });
 //
-//     } catch (e) {
-//       debugPrint("Error loading stocks: $e");
+// } catch (e) {
+// debugPrint("Error loading stocks: $e");
 //
-//       setState(() {
-//         isLoading = false;
-//       });
+// setState(() {
+// isLoading = false;
+// });
 //
-//     }
-//   }
+// }
+// }
 //
-//   @override
-//   void dispose() {
-//     service?.dispose();
-//     super.dispose();
-//   }
+// @override
+// void dispose() {
+// service?.dispose();
+// super.dispose();
+// }
 //
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Stock Watchlist")),
+// @override
+// Widget build(BuildContext context) {
+// return Scaffold(
+// appBar: AppBar(title: const Text("Stock Watchlist")),
 //
-//       body: isLoading
-//           ? const Center(child: CircularProgressIndicator())
-//           : ListView.builder(
-//               itemCount: stocks.length,
+// body: isLoading
+// ? const Center(child: CircularProgressIndicator())
+// : ListView.builder(
+// itemCount: stocks.length,
 //
-//               itemBuilder: (context, index) {
-//                 final stock = stocks[index];
+// itemBuilder: (context, index) {
+// final stock = stocks[index];
 //
-//                 return StockPriceWidget(stock: stock, service: service!);
-//               },
-//             ),
-//     );
-//   }
+// return StockPriceWidget(stock: stock, service: service!);
+// },
+// ),
+// );
+// }
 // }
 
 import 'package:flutter/material.dart';
@@ -139,18 +139,165 @@ class WatchlistScreen extends ConsumerWidget {
                 ? Center(child: Text(stockState.message))
                 : stockState is StockLoaded
                 ? ListView.builder(
-                    itemCount: stockState.stocks.length,
+              itemCount: stockState.stocks.length,
 
-                    itemBuilder: (context, index) {
-                      final stock = stockState.stocks[index];
+              itemBuilder: (context, index) {
+                final stock = stockState.stocks[index];
 
-                      return StockPriceWidget(stock: stock);
-                    },
-                  )
+                return StockPriceWidget(stock: stock);
+              },
+            )
                 : const SizedBox(),
           ),
         ],
       ),
     );
+
+
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+//
+// import '../providers/stock_provider.dart';
+// import '../widgets/stock_price_widget.dart';
+// import '../../domain/state/stock_state.dart';
+//
+// class WatchlistScreen extends ConsumerStatefulWidget {
+//   const WatchlistScreen({super.key});
+//
+//   @override
+//   ConsumerState<WatchlistScreen> createState() {
+//     return _WatchlistScreenState();
+//   }
+// }
+//
+// class _WatchlistScreenState
+//     extends ConsumerState<WatchlistScreen> {
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final stockState = ref.watch(stockProvider);
+//
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Stock Watchlist"),
+//
+//         actions: [
+//           // Pause
+//           IconButton(
+//             icon: const Icon(Icons.pause),
+//             tooltip: "Pause feed",
+//             onPressed: () {
+//               ref
+//                   .read(stockProvider.notifier)
+//                   .pauseFeed();
+//             },
+//           ),
+//
+//           // Resume
+//           IconButton(
+//             icon: const Icon(Icons.play_arrow),
+//             tooltip: "Resume feed",
+//             onPressed: () {
+//               ref
+//                   .read(stockProvider.notifier)
+//                   .resumeFeed();
+//             },
+//           ),
+//         ],
+//       ),
+//
+//       body: Column(
+//         children: [
+//
+//           // ==================================================
+//           // SEARCH
+//           // ==================================================
+//
+//           Padding(
+//             padding: const EdgeInsets.all(8),
+//             child: TextField(
+//               decoration: const InputDecoration(
+//                 hintText: "Search Symbol",
+//                 border: OutlineInputBorder(),
+//                 prefixIcon: Icon(Icons.search),
+//               ),
+//
+//               onChanged: (value) {
+//                 ref
+//                     .read(stockProvider.notifier)
+//                     .searchStocks(value);
+//               },
+//             ),
+//           ),
+//
+//           // ==================================================
+//           // STOCK LIST
+//           // ==================================================
+//
+//           Expanded(
+//             child: _buildStockList(stockState),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildStockList(StockState stockState) {
+//
+//     // ======================================================
+//     // LOADING
+//     // ======================================================
+//
+//     if (stockState is StockLoading) {
+//       return const Center(
+//         child: CircularProgressIndicator(),
+//       );
+//     }
+//
+//     // ======================================================
+//     // ERROR
+//     // ======================================================
+//
+//     if (stockState is StockError) {
+//       return Center(
+//         child: Text(
+//           stockState.message,
+//         ),
+//       );
+//     }
+//
+//     // ======================================================
+//     // LOADED
+//     // ======================================================
+//
+//     if (stockState is StockLoaded) {
+//
+//       if (stockState.stocks.isEmpty) {
+//         return const Center(
+//           child: Text(
+//             "No stocks found",
+//           ),
+//         );
+//       }
+//
+//       return ListView.builder(
+//         itemCount: stockState.stocks.length,
+//
+//         itemBuilder: (context, index) {
+//
+//           final stock = stockState.stocks[index];
+//
+//           return StockPriceWidget(
+//             key: ValueKey(stock.symbol),
+//             stock: stock,
+//           );
+//         },
+//       );
+//     }
+//
+//     return const SizedBox();
+//   }
+// }
