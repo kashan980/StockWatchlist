@@ -67,9 +67,9 @@ class StockDataSource {
       stocks[symbol] = updatedStock;
       controllers[symbol]!
           .add(updatedStock);
-      debugPrint(
-          "$symbol updated ${updatedStock.currentPrice}"
-      );
+      //debugPrint(
+       //   "$symbol updated ${updatedStock.currentPrice}"
+     // );
     }
   }
   void dispose(){
