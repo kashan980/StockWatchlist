@@ -216,8 +216,6 @@ class StockPriceWidget extends StatelessWidget {
         ),
       ),
     );
-
-
   }
 }
 

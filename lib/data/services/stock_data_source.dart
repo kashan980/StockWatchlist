@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import '../models/stock.dart';
-import 'package:flutter/material.dart';
 
 class StockDataSource {
   final Random random = Random();
@@ -16,7 +15,6 @@ class StockDataSource {
       StreamController<Stock>.broadcast();
 
     }
-
   }
   Stream<Stock> getStockStream(String symbol) {
 

@@ -152,8 +152,6 @@ class WatchlistScreen extends ConsumerWidget {
         ],
       ),
     );
-
-
   }
 }
 

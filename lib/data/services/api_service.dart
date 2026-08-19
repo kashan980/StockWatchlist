@@ -1,7 +1,6 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import '../models/stock.dart';
 
 class ApiService {
@@ -18,24 +17,6 @@ class ApiService {
           }
         )
       );
-
-      //API REQUEST LOGS debugPrint
-      ('========== API REQUEST ==========');
-      debugPrint('METHOD: ${response.requestOptions.method}');
-      debugPrint('URL: ${response.requestOptions.uri}');
-      debugPrint('QUERY PARAMETERS: ${response.requestOptions.queryParameters}');
-      debugPrint('HEADERS: ${response.requestOptions.headers}');
-      debugPrint('REQUEST BODY: ${response.requestOptions.data}');
-      debugPrint('==================================');
-      // API RESPONSE LOGS
-
-
-      debugPrint('========== API RESPONSE ==========');
-      debugPrint('STATUS CODE: ${response.statusCode}');          //Explore these logs
-      debugPrint('STATUS MESSAGE: ${response.statusMessage}');
-      debugPrint('RESPONSE HEADERS: ${response.headers}');
-      debugPrint('RESPONSE BODY: ${response.data}');
-      debugPrint('==================================');
 
       //debugPrint(response.data.runtimeType);
 
